@@ -1,4 +1,32 @@
+// ignore_for_file: unnecessary_new
+
 class Home {
+  bool? status;
+  String? message;
+  DataReturn? dataReturn;
+
+  Home({this.status, this.message, this.dataReturn});
+
+  Home.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    dataReturn = json['data_return'] != null
+        ? new DataReturn.fromJson(json['data_return'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['message'] = message;
+    if (dataReturn != null) {
+      data['data_return'] = dataReturn!.toJson();
+    }
+    return data;
+  }
+}
+
+class DataReturn {
   List<Promo>? promo;
   List<FeaturedService>? featuredService;
   List<Branch>? branch;
@@ -6,7 +34,7 @@ class Home {
   List<Item>? item;
   List<Staff>? staff;
 
-  Home(
+  DataReturn(
       {this.promo,
       this.featuredService,
       this.branch,
@@ -14,41 +42,41 @@ class Home {
       this.item,
       this.staff});
 
-  Home.fromJson(Map<String, dynamic> json) {
+  DataReturn.fromJson(Map<String, dynamic> json) {
     if (json['promo'] != null) {
       promo = <Promo>[];
       json['promo'].forEach((v) {
-        promo!.add(Promo.fromJson(v));
+        promo!.add(new Promo.fromJson(v));
       });
     }
     if (json['featured_service'] != null) {
       featuredService = <FeaturedService>[];
       json['featured_service'].forEach((v) {
-        featuredService!.add(FeaturedService.fromJson(v));
+        featuredService!.add(new FeaturedService.fromJson(v));
       });
     }
     if (json['branch'] != null) {
       branch = <Branch>[];
       json['branch'].forEach((v) {
-        branch!.add(Branch.fromJson(v));
+        branch!.add(new Branch.fromJson(v));
       });
     }
     if (json['top_service'] != null) {
       topService = <TopService>[];
       json['top_service'].forEach((v) {
-        topService!.add(TopService.fromJson(v));
+        topService!.add(new TopService.fromJson(v));
       });
     }
     if (json['item'] != null) {
       item = <Item>[];
       json['item'].forEach((v) {
-        item!.add(Item.fromJson(v));
+        item!.add(new Item.fromJson(v));
       });
     }
     if (json['staff'] != null) {
       staff = <Staff>[];
       json['staff'].forEach((v) {
-        staff!.add(Staff.fromJson(v));
+        staff!.add(new Staff.fromJson(v));
       });
     }
   }
@@ -180,7 +208,7 @@ class TopService {
   String? itemName;
   String? image;
   String? price;
-  dynamic specialPrice;
+  Null? specialPrice;
   String? duration;
   String? categoryName;
   String? totalUsed;

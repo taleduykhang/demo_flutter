@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.12.0+2
   json_helpers: ^0.1.5
+  flutter_svg: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,7 +62,15 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/dart-logo-for-shares.png
-
+    - assets/LogoApp.png
+    - assets/logo.svg
+    - assets/logo.png
+    - assets/Union.svg
+    - assets/user.svg
+    - assets/home.svg
+    - assets/gift.svg
+    - assets/image.svg
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
