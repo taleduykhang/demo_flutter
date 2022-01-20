@@ -1,14 +1,41 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:json_helpers/json_helpers.dart';
 import 'package:my_app/Assets/icon.dart';
 import 'package:my_app/Theme/theme.dart';
+import 'package:my_app/models/home.dart';
+import 'package:my_app/router/tabs/tab_account.dart';
 import 'package:my_app/router/tabs/tab_gallery.dart';
 import 'package:my_app/router/tabs/tab_home.dart';
 import 'package:my_app/router/tabs/tab_info.dart';
+import 'package:my_app/router/tabs/tab_promo.dart';
 import 'Screens/moreService.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(const MyApp());
+List<Home> parseProducts(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Home>((json) => Home.fromJson(json)).toList();
+}
+
+Future<List<Home>> fetchProducts() async {
+  dynamic headers = {
+    "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+  };
+  final response =
+      await http.get('https://demo.myspa.vn/moba/v1/home', headers: headers);
+  if (response.statusCode == 200) {
+    // print('zcasasdas $abc');
+    return parseProducts(response.body);
+  } else {
+    throw Exception('Unable to fetch products from the REST API');
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -21,7 +48,7 @@ class MyApp extends StatelessWidget {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => const HomePage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        '/second': (context) => const SecondScreen(),
+        '/second': (context) => const MoreService(),
       },
     );
   }
@@ -37,6 +64,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late TabController controller;
+
   @override
   void initState() {
     super.initState();
@@ -52,17 +80,19 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  // late final Future<List<Home>> home;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: TabBarView(
           // Add tabs as widgets
           children: <Widget>[
-            const TabHome(),
-            const TabGallery(),
+            TabHome(home: fetchProducts()),
+            const TabPromo(),
             const TabInfo(),
-            const TabHome(),
-            const TabGallery()
+            const TabGallery(),
+            const TabAccount()
           ],
           // set the controller
           controller: controller,
@@ -73,7 +103,7 @@ class _HomePageState extends State<HomePage>
           // set the tab bar as the child of bottom navigation bar
           child: TabBar(
             labelColor: appBgColor,
-            labelStyle: const TextStyle(fontSize: 10),
+            labelStyle: const TextStyle(fontSize: 8),
             tabs: <Tab>[
               Tab(
                 text: 'Trang chủ',

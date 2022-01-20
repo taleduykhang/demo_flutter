@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_new
+// ignore_for_file: prefer_collection_literals
 
 class Home {
   bool? status;
@@ -11,12 +11,12 @@ class Home {
     status = json['status'];
     message = json['message'];
     dataReturn = json['data_return'] != null
-        ? new DataReturn.fromJson(json['data_return'])
+        ? DataReturn.fromJson(json['data_return'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['status'] = status;
     data['message'] = message;
     if (dataReturn != null) {
@@ -46,43 +46,43 @@ class DataReturn {
     if (json['promo'] != null) {
       promo = <Promo>[];
       json['promo'].forEach((v) {
-        promo!.add(new Promo.fromJson(v));
+        promo!.add(Promo.fromJson(v));
       });
     }
     if (json['featured_service'] != null) {
       featuredService = <FeaturedService>[];
       json['featured_service'].forEach((v) {
-        featuredService!.add(new FeaturedService.fromJson(v));
+        featuredService!.add(FeaturedService.fromJson(v));
       });
     }
     if (json['branch'] != null) {
       branch = <Branch>[];
       json['branch'].forEach((v) {
-        branch!.add(new Branch.fromJson(v));
+        branch!.add(Branch.fromJson(v));
       });
     }
     if (json['top_service'] != null) {
       topService = <TopService>[];
       json['top_service'].forEach((v) {
-        topService!.add(new TopService.fromJson(v));
+        topService!.add(TopService.fromJson(v));
       });
     }
     if (json['item'] != null) {
       item = <Item>[];
       json['item'].forEach((v) {
-        item!.add(new Item.fromJson(v));
+        item!.add(Item.fromJson(v));
       });
     }
     if (json['staff'] != null) {
       staff = <Staff>[];
       json['staff'].forEach((v) {
-        staff!.add(new Staff.fromJson(v));
+        staff!.add(Staff.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     if (promo != null) {
       data['promo'] = promo!.map((v) => v.toJson()).toList();
     }
@@ -122,7 +122,7 @@ class Promo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['promo_id'] = promoId;
     data['promo_title'] = promoTitle;
     data['promo_link'] = promoLink;
@@ -166,7 +166,7 @@ class FeaturedService {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
     data['type'] = type;
     data['item_name'] = itemName;
@@ -194,7 +194,7 @@ class Branch {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['branch_id'] = branchId;
     data['branch_name'] = branchName;
     data['branch_image'] = branchImage;
@@ -208,7 +208,7 @@ class TopService {
   String? itemName;
   String? image;
   String? price;
-  Null? specialPrice;
+  dynamic specialPrice;
   String? duration;
   String? categoryName;
   String? totalUsed;
@@ -240,7 +240,7 @@ class TopService {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
     data['type'] = type;
     data['item_name'] = itemName;
@@ -287,7 +287,7 @@ class Item {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
     data['name'] = name;
     data['image'] = image;
@@ -329,7 +329,7 @@ class Staff {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = id;
     data['fullname'] = fullname;
     data['telephone'] = telephone;

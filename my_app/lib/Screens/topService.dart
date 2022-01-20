@@ -7,18 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/Components/row_item.dart';
 import 'package:my_app/Theme/theme.dart';
 import 'package:my_app/models/feature_service.dart';
-import 'package:my_app/models/home.dart';
 
-class MoreService extends StatefulWidget {
-  const MoreService({Key? key}) : super(key: key);
+class TopService extends StatefulWidget {
+  const TopService({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<MoreService> {
+class _HomePageState extends State<TopService> {
   dynamic dataApi;
-  late final Home items;
 
   Future<FeaturedServices> fetchProducts() async {
     dynamic headers = {
@@ -42,7 +40,6 @@ class _HomePageState extends State<MoreService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Image.asset('assets/LogoApp.png', height: 50, width: 50,),
         title: const Text('Dịch vụ nổi bật'),
         backgroundColor: appBgColor,
       ),

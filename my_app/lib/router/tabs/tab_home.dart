@@ -1,32 +1,47 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, import_of_legacy_library_into_null_safe
+// ignore_for_file: prefer_const_literals_to_create_immutables, import_of_legacy_library_into_null_safe, no_logic_in_create_state, must_be_immutable, avoid_print
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:my_app/Assets/icon.dart';
+import 'package:my_app/Components/row_item.dart';
+import 'package:my_app/Screens/moreService.dart';
 import 'package:my_app/models/home.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:my_app/Theme/theme.dart';
 
-class TabHome extends StatefulWidget {
-  const TabHome({Key? key}) : super(key: key);
-
+class TabHome extends StatelessWidget {
+  const TabHome({Key? key, required this.home}) : super(key: key);
+  final Future<List<Home>> home;
+  // @override
+  // _HomePageState createState() => _HomePageState(home: home);
   @override
-  _HomePageState createState() => _HomePageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: _HomePageState(home: home),
+    );
+  }
 }
 
-class _HomePageState extends State<TabHome> {
+class _HomePageState extends StatelessWidget {
   dynamic promo;
   dynamic featuredService;
   dynamic branch;
   dynamic topService;
   dynamic item;
   dynamic dataApi;
-  late TabController controller;
+  final Future<List<Home>> home;
 
-  // static const Color appBgColor = Color(0XFF377d75);
-  Future<Home> fetchProducts() async {
+  _HomePageState({Key? key, required this.home}) : super(key: key);
+
+  List<Home> parseProducts(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Home>((json) => Home.fromJson(json)).toList();
+  }
+
+  Future<List<Home>> fetchProducts() async {
     dynamic headers = {
       "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
       "Accept": "application/json",
@@ -43,7 +58,7 @@ class _HomePageState extends State<TabHome> {
       topService = dataApi!['top_service'] as dynamic;
       item = dataApi!['item'] as dynamic;
 
-      return jsonDecode(response.body);
+      return compute(parseProducts, response.body);
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
@@ -70,7 +85,7 @@ class _HomePageState extends State<TabHome> {
         //   width: 50,
         // ),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Home>>(
         future: fetchProducts(),
         builder: (context, data) {
           if (data.connectionState == ConnectionState.done) {
@@ -81,61 +96,81 @@ class _HomePageState extends State<TabHome> {
                   height: 150.0,
                   child: PageView.builder(
                     itemCount: promo!.length,
-                    controller: PageController(viewportFraction: 0.9),
+                    controller: PageController(viewportFraction: 1),
                     itemBuilder: (BuildContext context, int itemIndex) {
                       return _buildCarouselItem(context, itemIndex);
                     },
                   ),
                 ),
-                _headerItem('Dịch vụ nổi bật', '/second'),
+                _headerItem('Dịch vụ nổi bật', const MoreService(), context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 280,
+                  height: 240,
                   child: ListView.builder(
                     itemCount: featuredService!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return _rowItem(context, index, featuredService,
-                          'item_name', 'price', 'image');
+                      return RowItem(
+                          context: context,
+                          rowIndex: index,
+                          dataItem: featuredService,
+                          name: 'item_name',
+                          price: 'price',
+                          image: 'image');
                     },
                   ),
                 ),
-                _headerItem('Sản phẩm/ dịch vụ/ Thẻ DV', '/second'),
+                _headerItem('Sản phẩm/ dịch vụ/ Thẻ DV', '', context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 280,
+                  height: 240,
                   child: ListView.builder(
                     itemCount: item!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return _rowItem(
-                          context, index, item, 'name', 'price', 'image');
+                      return RowItem(
+                          context: context,
+                          rowIndex: index,
+                          dataItem: item,
+                          name: 'name',
+                          price: 'price',
+                          image: 'image');
                     },
                   ),
                 ),
-                _headerItem('Dịch vụ yêu thích nhất', '/second'),
+                _headerItem('Dịch vụ yêu thích nhất', '', context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 280,
+                  height: 240,
                   child: ListView.builder(
                     itemCount: topService!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return _rowItem(context, index, topService, 'item_name',
-                          'price', 'image');
+                      return RowItem(
+                          context: context,
+                          rowIndex: index,
+                          dataItem: topService,
+                          name: 'item_name',
+                          price: 'price',
+                          image: 'image');
                     },
                   ),
                 ),
-                _headerItem('Chi nhánh', ''),
+                _headerItem('Chi nhánh', '', context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 280,
+                  height: 240,
                   child: ListView.builder(
                     itemCount: branch!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return _rowItem(context, index, branch, 'branch_name', '',
-                          'branch_image');
+                      return RowItem(
+                          context: context,
+                          rowIndex: index,
+                          dataItem: branch,
+                          name: 'branch_name',
+                          price: '',
+                          image: 'branch_image');
                     },
                   ),
                 ),
@@ -154,12 +189,13 @@ class _HomePageState extends State<TabHome> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Image.network(promo![itemIndex]['promo_image'],
-          height: 100, width: 350),
+      width: (MediaQuery.of(context).size.width),
+      height: (MediaQuery.of(context).size.width - 100),
+      // child: Image.network(promo![itemIndex]['promo_image'], fit: BoxFit.cover),
     );
   }
 
-  Widget _headerItem(String title, String screen) {
+  Widget _headerItem(String title, dynamic screen, dynamic context) {
     return Container(
         margin: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(
@@ -173,7 +209,10 @@ class _HomePageState extends State<TabHome> {
               ),
               onPressed: () {
                 screen != ''
-                    ? Navigator.pushNamed(context, screen)
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => screen),
+                      )
                     : print('123');
               },
               child: const Text('Xem thêm'),
@@ -183,49 +222,5 @@ class _HomePageState extends State<TabHome> {
   }
 
   // ignore: unused_element
-  Widget _rowItem(BuildContext context, int rowIndex, dynamic dataItem,
-      String name, String? price, String? image) {
-    return Container(
-        width: 200,
-        margin: const EdgeInsets.all(8),
-        alignment: Alignment.center,
-        color: Colors.white,
-        child: Column(children: [
-          SizedBox(
-            width: 200,
-            child: Image.network(dataItem[rowIndex][image]),
-          ),
-          Container(
-            margin: const EdgeInsets.all(5),
-            child: Row(
-              children: [
-                SizedBox(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: Text(
-                            dataItem[rowIndex][name],
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        price != ''
-                            ? SizedBox(
-                                width: 140,
-                                child: Text(dataItem[rowIndex]['price']))
-                            : const SizedBox(),
-                      ]),
-                ),
-                IconButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {},
-                  icon: icCart,
-                )
-              ],
-            ),
-          )
-        ]));
-  }
+
 }
