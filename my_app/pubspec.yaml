@@ -70,6 +70,9 @@ flutter:
     - assets/home.svg
     - assets/gift.svg
     - assets/image.svg
+    - assets/ic-no.png
+    - assets/ic-fl.png
+    - assets/ic-cut.png
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

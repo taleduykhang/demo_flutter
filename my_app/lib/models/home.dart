@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_collection_literals
+// ignore_for_file: prefer_collection_literals, unnecessary_this, unnecessary_new
 
 class Home {
   bool? status;
@@ -122,11 +122,11 @@ class Promo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['promo_id'] = promoId;
-    data['promo_title'] = promoTitle;
-    data['promo_link'] = promoLink;
-    data['promo_image'] = promoImage;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['promo_id'] = this.promoId;
+    data['promo_title'] = this.promoTitle;
+    data['promo_link'] = this.promoLink;
+    data['promo_image'] = this.promoImage;
     return data;
   }
 }

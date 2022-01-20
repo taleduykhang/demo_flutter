@@ -17,8 +17,9 @@ class MoreService extends StatefulWidget {
 }
 
 class _HomePageState extends State<MoreService> {
-  dynamic dataApi;
-  late final Home items;
+  FeaturedServices parseJson(String responseBody) {
+    return FeaturedServices.fromJson(jsonDecode(responseBody));
+  }
 
   Future<FeaturedServices> fetchProducts() async {
     dynamic headers = {
@@ -30,9 +31,7 @@ class _HomePageState extends State<MoreService> {
         'https://demo.myspa.vn/moba/v1/Service/get_featured_services',
         headers: headers);
     if (response.statusCode == 200) {
-      dataApi = jsonDecode(response.body)['items'];
-
-      return jsonDecode(response.body);
+      return parseJson(response.body);
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
@@ -46,7 +45,7 @@ class _HomePageState extends State<MoreService> {
         title: const Text('Dịch vụ nổi bật'),
         backgroundColor: appBgColor,
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<FeaturedServices>(
         future: fetchProducts(),
         builder: (context, data) {
           if (data.connectionState == ConnectionState.done) {
@@ -56,16 +55,16 @@ class _HomePageState extends State<MoreService> {
                   crossAxisCount: 2,
                   childAspectRatio: 0.7,
                 ),
-                itemCount: dataApi.length,
-                padding: new EdgeInsets.all(8.0),
+                itemCount: data.data!.items!.length,
+                padding: new EdgeInsets.all(0.0),
                 itemBuilder: (BuildContext context, int index) {
                   return RowItem(
-                      context: context,
-                      rowIndex: index,
-                      dataItem: dataApi,
-                      name: 'name',
-                      price: 'price',
-                      image: 'image');
+                    name: data.data!.items![index].name,
+                    price: data.data!.items![index].price,
+                    image: data.data!.items![index].image,
+                    index: index,
+                    dataApi: data.data!.items,
+                  );
                 },
               ),
             );

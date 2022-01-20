@@ -6,31 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_app/Components/row_item.dart';
 import 'package:my_app/Theme/theme.dart';
-import 'package:my_app/models/feature_service.dart';
+import 'package:my_app/models/home.dart';
 
-class TopService extends StatefulWidget {
-  const TopService({Key? key}) : super(key: key);
+class TopServices extends StatefulWidget {
+  const TopServices({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<TopService> {
-  dynamic dataApi;
+class _HomePageState extends State<TopServices> {
+  Home parseJson(String responseBody) {
+    return Home.fromJson(jsonDecode(responseBody));
+  }
 
-  Future<FeaturedServices> fetchProducts() async {
+  Future<Home> fetchHome() async {
     dynamic headers = {
       "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
       "Accept": "application/json",
       "Content-Type": "application/json",
     };
-    final response = await http.get(
-        'https://demo.myspa.vn/moba/v1/Service/get_featured_services',
-        headers: headers);
+    final response =
+        await http.get('https://demo.myspa.vn/moba/v1/home', headers: headers);
     if (response.statusCode == 200) {
-      dataApi = jsonDecode(response.body)['items'];
-
-      return jsonDecode(response.body);
+      return parseJson(response.body);
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
@@ -43,8 +42,8 @@ class _HomePageState extends State<TopService> {
         title: const Text('Dịch vụ nổi bật'),
         backgroundColor: appBgColor,
       ),
-      body: FutureBuilder(
-        future: fetchProducts(),
+      body: FutureBuilder<Home>(
+        future: fetchHome(),
         builder: (context, data) {
           if (data.connectionState == ConnectionState.done) {
             return Scaffold(
@@ -53,16 +52,14 @@ class _HomePageState extends State<TopService> {
                   crossAxisCount: 2,
                   childAspectRatio: 0.7,
                 ),
-                itemCount: dataApi.length,
+                itemCount: data.data!.dataReturn!.topService!.length,
                 padding: new EdgeInsets.all(8.0),
                 itemBuilder: (BuildContext context, int index) {
                   return RowItem(
-                      context: context,
-                      rowIndex: index,
-                      dataItem: dataApi,
-                      name: 'name',
-                      price: 'price',
-                      image: 'image');
+                    name: data.data!.dataReturn!.topService![index].itemName,
+                    price: data.data!.dataReturn!.topService![index].price,
+                    image: data.data!.dataReturn!.topService![index].image,
+                  );
                 },
               ),
             );

@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:my_app/models/gallery.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:my_app/Theme/theme.dart';

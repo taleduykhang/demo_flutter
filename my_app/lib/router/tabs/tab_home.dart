@@ -2,46 +2,36 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/Components/row_item.dart';
 import 'package:my_app/Screens/moreService.dart';
+import 'package:my_app/Screens/topService.dart';
 import 'package:my_app/models/home.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:my_app/Theme/theme.dart';
 
 class TabHome extends StatelessWidget {
-  const TabHome({Key? key, required this.home}) : super(key: key);
-  final Future<List<Home>> home;
-  // @override
-  // _HomePageState createState() => _HomePageState(home: home);
+  const TabHome({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: _HomePageState(home: home),
+    return const MaterialApp(
+      home: _HomePageState(),
     );
   }
 }
 
 class _HomePageState extends StatelessWidget {
-  dynamic promo;
-  dynamic featuredService;
-  dynamic branch;
-  dynamic topService;
-  dynamic item;
-  dynamic dataApi;
-  final Future<List<Home>> home;
+  final Future<Home>? home;
 
-  _HomePageState({Key? key, required this.home}) : super(key: key);
+  const _HomePageState({Key? key, this.home}) : super(key: key);
 
-  List<Home> parseProducts(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-    return parsed.map<Home>((json) => Home.fromJson(json)).toList();
+  Home parseJson(String responseBody) {
+    return Home.fromJson(jsonDecode(responseBody));
   }
 
-  Future<List<Home>> fetchProducts() async {
+  Future<Home> fetchHome() async {
     dynamic headers = {
       "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
       "Accept": "application/json",
@@ -50,15 +40,7 @@ class _HomePageState extends StatelessWidget {
     final response =
         await http.get('https://demo.myspa.vn/moba/v1/home', headers: headers);
     if (response.statusCode == 200) {
-      dataApi = jsonDecode(response.body)!['data_return'];
-
-      promo = dataApi!['promo'] as dynamic;
-      featuredService = dataApi!['featured_service'] as dynamic;
-      branch = dataApi!['branch'] as dynamic;
-      topService = dataApi!['top_service'] as dynamic;
-      item = dataApi!['item'] as dynamic;
-
-      return compute(parseProducts, response.body);
+      return parseJson(response.body);
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
@@ -85,8 +67,8 @@ class _HomePageState extends StatelessWidget {
         //   width: 50,
         // ),
       ),
-      body: FutureBuilder<List<Home>>(
-        future: fetchProducts(),
+      body: FutureBuilder<Home>(
+        future: fetchHome(),
         builder: (context, data) {
           if (data.connectionState == ConnectionState.done) {
             return ListView(
@@ -95,82 +77,94 @@ class _HomePageState extends StatelessWidget {
                   // Vertical ListView
                   height: 150.0,
                   child: PageView.builder(
-                    itemCount: promo!.length,
+                    itemCount: data.data!.dataReturn!.promo!.length,
                     controller: PageController(viewportFraction: 1),
                     itemBuilder: (BuildContext context, int itemIndex) {
-                      return _buildCarouselItem(context, itemIndex);
+                      return _buildCarouselItem(
+                          context, itemIndex, data.data?.dataReturn?.promo);
                     },
                   ),
                 ),
                 _headerItem('Dịch vụ nổi bật', const MoreService(), context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 240,
+                  height: 260,
                   child: ListView.builder(
-                    itemCount: featuredService!.length,
+                    itemCount: data.data!.dataReturn!.featuredService!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return RowItem(
-                          context: context,
-                          rowIndex: index,
-                          dataItem: featuredService,
-                          name: 'item_name',
-                          price: 'price',
-                          image: 'image');
+                        name: data
+                            .data!.dataReturn!.featuredService![index].itemName,
+                        price: data
+                            .data!.dataReturn!.featuredService![index].price,
+                        image: data
+                            .data!.dataReturn!.featuredService![index].image,
+                        index: index,
+                        dataApi: data.data!.dataReturn!.featuredService,
+                        duration: data
+                            .data!.dataReturn!.featuredService![index].duration,
+                        categoryName: data.data!.dataReturn!
+                            .featuredService![index].categoryName,
+                      );
                     },
                   ),
                 ),
                 _headerItem('Sản phẩm/ dịch vụ/ Thẻ DV', '', context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 240,
+                  height: 260,
                   child: ListView.builder(
-                    itemCount: item!.length,
+                    itemCount: data.data!.dataReturn!.item!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return RowItem(
-                          context: context,
-                          rowIndex: index,
-                          dataItem: item,
-                          name: 'name',
-                          price: 'price',
-                          image: 'image');
+                        name: data.data!.dataReturn!.item![index].name,
+                        price: data.data!.dataReturn!.item![index].price,
+                        image: data.data!.dataReturn!.item![index].image,
+                      );
                     },
                   ),
                 ),
-                _headerItem('Dịch vụ yêu thích nhất', '', context),
+                _headerItem(
+                    'Dịch vụ yêu thích nhất', const TopServices(), context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 240,
+                  height: 260,
                   child: ListView.builder(
-                    itemCount: topService!.length,
+                    itemCount: data.data!.dataReturn!.topService!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return RowItem(
-                          context: context,
-                          rowIndex: index,
-                          dataItem: topService,
-                          name: 'item_name',
-                          price: 'price',
-                          image: 'image');
+                        name:
+                            data.data!.dataReturn!.topService![index].itemName,
+                        price: data.data!.dataReturn!.topService![index].price,
+                        image: data.data!.dataReturn!.topService![index].image,
+                        index: index,
+                        dataApi: data.data!.dataReturn!.topService,
+                        duration:
+                            data.data!.dataReturn!.topService![index].duration,
+                        categoryName: data
+                            .data!.dataReturn!.topService![index].categoryName,
+                        totalUsed:
+                            data.data!.dataReturn!.topService![index].totalUsed,
+                      );
                     },
                   ),
                 ),
                 _headerItem('Chi nhánh', '', context),
                 SizedBox(
                   // Horizontal ListView
-                  height: 240,
+                  height: 260,
                   child: ListView.builder(
-                    itemCount: branch!.length,
+                    itemCount: data.data!.dataReturn!.branch!.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return RowItem(
-                          context: context,
-                          rowIndex: index,
-                          dataItem: branch,
-                          name: 'branch_name',
-                          price: '',
-                          image: 'branch_image');
+                          name:
+                              data.data!.dataReturn!.branch![index].branchName,
+                          image: data
+                              .data!.dataReturn!.branch![index].branchImage);
                     },
                   ),
                 ),
@@ -185,13 +179,14 @@ class _HomePageState extends StatelessWidget {
     );
   }
 
-  Widget _buildCarouselItem(BuildContext context, int itemIndex) {
+  Widget _buildCarouselItem(
+      BuildContext context, int itemIndex, dynamic promo) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       width: (MediaQuery.of(context).size.width),
       height: (MediaQuery.of(context).size.width - 100),
-      // child: Image.network(promo![itemIndex]['promo_image'], fit: BoxFit.cover),
+      child: Image.network(promo![itemIndex].promoImage, fit: BoxFit.cover),
     );
   }
 
@@ -208,7 +203,7 @@ class _HomePageState extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all<Color>(appBgColor),
               ),
               onPressed: () {
-                screen != ''
+                screen != null
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => screen),

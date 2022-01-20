@@ -2,69 +2,99 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_app/Assets/icon.dart';
+import 'package:my_app/Screens/detail.dart';
 import 'package:my_app/Theme/theme.dart';
-import 'package:my_app/models/home.dart';
 
 class RowItem extends StatelessWidget {
-  final dynamic context;
-  final dynamic dataItem;
-  final dynamic rowIndex;
   final dynamic image;
   final dynamic name;
   final dynamic price;
-  RowItem({
-    Key? key,
-    this.context,
-    this.dataItem,
-    this.rowIndex,
-    this.image,
-    this.name,
-    this.price,
-  }) : super(key: key);
+  final dynamic context;
+  final dynamic dataApi;
+  final dynamic index;
+  final dynamic duration;
+  final dynamic categoryName;
+  final dynamic totalUsed;
+
+  RowItem(
+      {Key? key,
+      this.name,
+      this.image,
+      this.price,
+      this.context,
+      this.dataApi,
+      this.index,
+      this.duration,
+      this.categoryName,
+      this.totalUsed})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 160,
+        width: 180,
         margin: const EdgeInsets.all(8),
         alignment: Alignment.center,
         color: Colors.white,
-        child: Column(children: [
-          SizedBox(
-            width: 160,
-            child: Image.network(this.dataItem[this.rowIndex][this.image]),
-          ),
-          Container(
-            margin: const EdgeInsets.all(5),
-            child: Row(
-              children: [
-                SizedBox(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            dataItem[rowIndex][name],
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        price != ''
-                            ? SizedBox(
-                                width: 100,
-                                child: Text(dataItem[rowIndex]['price'],
-                                    style: const TextStyle(color: appBgColor)))
-                            : const SizedBox(),
-                      ]),
+        child: TextButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder: (context) => const DetailScreen(),
+                  settings: RouteSettings(
+                    arguments: {
+                      "name": name,
+                      "image": image,
+                      "price": price,
+                      "duration": duration,
+                      "categoryName": categoryName,
+                      "totalUsed": totalUsed
+                    },
+                    name: 'Chi tiết',
+                  ),
                 ),
-                IconButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {},
-                  icon: icCart,
-                )
-              ],
-            ),
-          )
-        ]));
+              );
+            },
+            child: Column(children: [
+              SizedBox(
+                width: 160,
+                child: Image.network(image),
+              ),
+              Container(
+                margin: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      child: Column(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 95,
+                              child: Text(
+                                name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            price != null
+                                ? SizedBox(
+                                    width: 95,
+                                    child: Text(price,
+                                        style:
+                                            const TextStyle(color: appBgColor)))
+                                : const SizedBox()
+                          ]),
+                    ),
+                    IconButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        // print(dataApi[index]);
+                      },
+                      icon: icCart,
+                    )
+                  ],
+                ),
+              )
+            ])));
+    // return
   }
 }
