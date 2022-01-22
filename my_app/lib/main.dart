@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
@@ -93,7 +94,13 @@ class _HomePageState extends State<HomePage>
               Tab(
                   child: SizedBox(
                       child: Column(
-                children: [Image.asset('assets/logo.png')],
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 45,
+                    fit: BoxFit.fill,
+                  )
+                ],
               ))),
               Tab(
                 text: 'Gallery',

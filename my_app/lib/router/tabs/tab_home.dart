@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:my_app/Components/row_item.dart';
 import 'package:my_app/Screens/moreService.dart';
+import 'package:my_app/Screens/tab_service.dart';
 import 'package:my_app/Screens/topService.dart';
 import 'package:my_app/models/home.dart';
 
@@ -17,6 +18,7 @@ class TabHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: _HomePageState(),
     );
   }
@@ -61,11 +63,34 @@ class _HomePageState extends StatelessWidget {
           ),
         ),
         backgroundColor: appBgColor,
-        // leading: Image.asset(
-        //   'assets/LogoApp.png',
-        //   height: 50,
-        //   width: 50,
-        // ),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              'assets/ic-fl.png',
+              height: 35,
+              fit: BoxFit.fill,
+            ),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a screen qr code')));
+            },
+          ),
+          IconButton(
+            icon: Image.asset(
+              'assets/ic-cut.png',
+              height: 35,
+              fit: BoxFit.fill,
+            ),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a screen cart')));
+            },
+          ),
+        ],
+
+        centerTitle: true,
       ),
       body: FutureBuilder<Home>(
         future: fetchHome(),
@@ -110,7 +135,8 @@ class _HomePageState extends StatelessWidget {
                     },
                   ),
                 ),
-                _headerItem('Sản phẩm/ dịch vụ/ Thẻ DV', '', context),
+                _headerItem(
+                    'Sản phẩm/ dịch vụ/ Thẻ DV', const TabService(), context),
                 SizedBox(
                   // Horizontal ListView
                   height: 260,

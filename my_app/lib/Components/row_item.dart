@@ -33,8 +33,19 @@ class RowItem extends StatelessWidget {
     return Container(
         width: 180,
         margin: const EdgeInsets.all(8),
-        alignment: Alignment.center,
-        color: Colors.white,
+        // padding: const EdgeInsets.all(0),
+        // alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              offset: Offset(0.0, 1.0), //(x,y)
+              blurRadius: 5.0,
+            ),
+          ],
+        ),
         child: TextButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true).push(
@@ -56,7 +67,7 @@ class RowItem extends StatelessWidget {
             },
             child: Column(children: [
               SizedBox(
-                width: 160,
+                width: 180,
                 child: Image.network(image),
               ),
               Container(
@@ -69,11 +80,10 @@ class RowItem extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: 95,
-                              child: Text(
-                                name,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              child: Text(name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(color: Colors.black)),
                             ),
                             price != null
                                 ? SizedBox(

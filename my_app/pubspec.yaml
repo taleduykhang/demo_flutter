@@ -37,6 +37,10 @@ dependencies:
   http: ^0.12.0+2
   json_helpers: ^0.1.5
   flutter_svg: ^1.0.1
+  qr_flutter: ^4.0.0
+  collapsible: ^1.0.0
+  accordion: ^2.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
