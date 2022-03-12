@@ -21,7 +21,7 @@ class _HomePageState extends State<TabGallery> {
   // static const Color appBgColor = Color(0XFF377d75);
   Future<Gallery> fetchProducts() async {
     dynamic headers = {
-      "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
+      "X-API-KEY": "",
       "Accept": "application/json",
       "Content-Type": "application/json",
     };

@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   // We will fetch data from this Rest api
   final _baseUrl = 'https://demo.myspa.vn/moba/v2/Service/get_list';
   dynamic headers = {
-    "X-API-KEY": "lKK_012LajDh9sf9KKjhasdNHjlcsd23UaNB82Kj",
+    "X-API-KEY": "",
     "Accept": "application/json",
     "Content-Type": "application/json",
   };
